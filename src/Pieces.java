@@ -100,44 +100,43 @@ public class Pieces {
 			 		break;
 			case 4: g.setColor(Color.blue);
 					if(rotation % 4 == 0){
-						g.fillRect(pt.x, pt.y, 75, 25);
-						g.fillRect(pt.x, pt.y-25, 25, 25);
+						g.fillRect(pt.x-25, pt.y-25, 25, 50);
+						g.fillRect(pt.x, pt.y, 50, 25);
 					}
 					else if(rotation % 4 == 1 || rotation % 4 == -3) {
-						g.fillRect(pt.x, pt.y, 25, 75);
-						g.fillRect(pt.x+25, pt.y, 25, 25);						
+						g.fillRect(pt.x, pt.y-25, 50, 25);
+						g.fillRect(pt.x, pt.y, 25, 50);						
 					}
 					else if(rotation % 4 == 2 || rotation % 4 == -2) {
-						g.fillRect(pt.x, pt.y, 75, 25);
-						g.fillRect(pt.x+50, pt.y+25, 25, 25);				
+						g.fillRect(pt.x-25, pt.y, 75, 25);
+						g.fillRect(pt.x+25, pt.y+25, 25, 25);				
 					}
 					else {
-						g.fillRect(pt.x, pt.y, 25, 75);
-						g.fillRect(pt.x-25, pt.y+50, 25, 25);					
+						g.fillRect(pt.x, pt.y-25, 25, 75);
+						g.fillRect(pt.x-25, pt.y+25, 25, 25);					
 					}
 					break;
 			case 5: g.setColor(Color.orange);
 					if(rotation % 4 == 0){
-						g.fillRect(pt.x, pt.y, 75, 25);
-						g.fillRect(pt.x+50, pt.y-25, 25, 25);
+						g.fillRect(pt.x+25, pt.y-25, 25, 25);
+						g.fillRect(pt.x-25, pt.y, 75, 25);
 					}
 					else if(rotation % 4 == 1 || rotation % 4 == -3) {
-						g.fillRect(pt.x, pt.y, 25, 75);
-						g.fillRect(pt.x+25, pt.y+50, 25, 25);						
+						g.fillRect(pt.x, pt.y-25, 25, 75);
+						g.fillRect(pt.x+25, pt.y+25, 25, 25);						
 					}
 					else if(rotation % 4 == 2 || rotation % 4 == -2) {
-						g.fillRect(pt.x, pt.y, 75, 25);
-						g.fillRect(pt.x, pt.y+25, 25, 25);				
+						g.fillRect(pt.x-25, pt.y, 75, 25);
+						g.fillRect(pt.x-25, pt.y+25, 25, 25);				
 					}
 					else {
-						g.fillRect(pt.x, pt.y, 25, 75);
-						g.fillRect(pt.x-25, pt.y, 25, 25);					
+						g.fillRect(pt.x, pt.y-25, 25, 75);
+						g.fillRect(pt.x-25, pt.y-25, 25, 25);					
 					}
 					break;
 			default: g.setColor(Color.cyan);
 					 if(rotation % 2 == 0) g.fillRect(pt.x-25, pt.y, 100, 25);
-					 else if(rotation % 4 == 1 || rotation % 4 == -3) g.fillRect(pt.x, pt.y-25, 25, 100);
-					 else g.fillRect(pt.x-25, pt.y, 100, 25);
+					 else g.fillRect( pt.x, pt.y-25, 25, 100);
 					 break;
 		}
 	}
@@ -150,17 +149,20 @@ public class Pieces {
 				if(pt.x >= 50 && pt.x <= 225 && pt.y != 525) rotation--;
 				break;
 			case 2: 
-				if(pt.x>= 50 && pt.x <= 225 && pt.y < 500) rotation--;
-			break;
+				if(pt.x >= 50 && pt.x <= 225 && pt.y < 500) rotation--;
+				break;
 			case 3: 
-				if(pt.x>= 50 && pt.x <= 225 && pt.y < 500) rotation--;
-			break;
-			case 4: 
-			break;
+				if(pt.x >= 50 && pt.x <= 225 && pt.y < 500) rotation--;
+				break;
+			case 4:
+				if(pt.x >= 50 && pt.x <= 225 && pt.y < 525) rotation--;
+				break;
 			case 5: 
-			break;
-			default:
-			break;
+				if(pt.x >= 50 && pt.x <= 225 && pt.y < 525) rotation--;
+				break;
+			default: 
+				if(pt.x >= 75 && pt.x <= 200 && pt.y < 500) rotation--;
+				break;
 		}		
 	}
 	
@@ -172,17 +174,20 @@ public class Pieces {
 				if(pt.x >= 50 && pt.x <= 225 && pt.y != 525) rotation++;
 				break;
 			case 2:
-				if(pt.x>= 50 && pt.x <= 225 && pt.y < 500) rotation++;
-			break;
+				if(pt.x >= 50 && pt.x <= 225 && pt.y < 500) rotation++;
+				break;
 			case 3: 
-				if(pt.x>= 50 && pt.x <= 225 && pt.y < 500) rotation++;
-			break;
+				if(pt.x >= 50 && pt.x <= 225 && pt.y < 500) rotation++;
+				break;
 			case 4: 
-			break;
-			case 5: 
-			break;
+				if(pt.x >= 50 && pt.x <= 225 && pt.y < 525) rotation++;
+				break;
+			case 5:
+				if(pt.x >= 50 && pt.x <= 225 && pt.y < 525) rotation++;
+				break;
 			default:
-			break;
+				if(pt.x >= 75 && pt.x <= 200 && pt.y < 500) rotation++;
+				break;
 		}
 	}
 
