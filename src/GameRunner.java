@@ -20,7 +20,7 @@ public class GameRunner extends JPanel implements KeyListener, ActionListener{
 	
 	public GameRunner() {
 		for(int i = 0; i < 5; i++)
-			pieceOrder.add(new Pieces( 0/*new Random().nextInt(7)*/) );
+			pieceOrder.add(new Pieces( new Random().nextInt(6)) );
 		
 		addKeyListener(this);
 		setFocusable(true);
@@ -67,8 +67,29 @@ public class GameRunner extends JPanel implements KeyListener, ActionListener{
 			pieceOrder.add(new Pieces( new Random().nextInt(7) ) );
 		}
 		
-		if(count % 100 == 0) {
-			piece.pt.y += 25;
+		if(count % 50 == 0 ) {
+			switch(piece.shape){
+				case 'O':
+					if (piece.pt.y < 500) piece.pt.y += 25;
+					break;
+				case 'T':
+					if ((piece.rotation % 4 == 0 && piece.pt.y < 525) ||
+						(piece.rotation % 4 != 0 && piece.pt.y < 500)) piece.pt.y += 25;
+					break;
+				case 'Z':
+					if ((piece.rotation % 2 == 0 && piece.pt.y < 500) ||
+						(piece.rotation % 2 != 0 && piece.pt.y < 475)) piece.pt.y += 25;
+					break;
+				case 'S':
+					if ((piece.rotation % 2 == 0 && piece.pt.y < 500) ||
+						(piece.rotation % 2 != 0 && piece.pt.y < 475)) piece.pt.y += 25;
+					break;
+				case 'I':
+					if((piece.rotation % 2 == 0 && piece.pt.y < 525) ||
+					   (piece.rotation % 2 != 0 && piece.pt.y < 475)) piece.pt.y += 25;
+					break;
+					
+			}
 		}
 		
 		repaint();
@@ -94,14 +115,20 @@ public class GameRunner extends JPanel implements KeyListener, ActionListener{
 					else if((piece.rotation % 4 == 3 || piece.rotation % 4 == -1) && piece.pt.x > 50) piece.pt.x -= 25;
 					break;
 				case 2: 
+					if(piece.rotation % 2 == 0 && piece.pt.x > 50) piece.pt.x -= 25;
+					else if(piece.rotation % 2 != 0 && piece.pt.x > 25) piece.pt.x -= 25;
 					break;
 				case 3: 
+					if(piece.rotation % 2 == 0 && piece.pt.x > 50) piece.pt.x -= 25;
+					else if(piece.rotation % 2 != 0 && piece.pt.x > 25) piece.pt.x -= 25;
 					break;
 				case 4: 
 					break;
 				case 5: 
 					break;
 				default:
+					if(piece.rotation % 2 == 0 && piece.pt.x > 50) piece.pt.x -= 25;
+					else if(piece.rotation % 2 != 0 && piece.pt.x > 25) piece.pt.x -= 25;
 					break;
 			}
 			
@@ -118,22 +145,28 @@ public class GameRunner extends JPanel implements KeyListener, ActionListener{
 					else if((piece.rotation % 4 == 3 || piece.rotation % 4 == -1) && piece.pt.x < 250) piece.pt.x += 25;
 					break;
 				case 2: 
-				break;
+					if(piece.rotation % 2 == 0 && piece.pt.x < 225) piece.pt.x += 25;
+					else if(piece.rotation % 2 != 0 && piece.pt.x < 250) piece.pt.x += 25;
+					break;
 				case 3: 
-				break;
+					if(piece.rotation % 2 == 0 && piece.pt.x < 225) piece.pt.x += 25;
+					else if(piece.rotation % 2 != 0 && piece.pt.x < 250) piece.pt.x += 25;
+					break;
 				case 4: 
 				break;
 				case 5: 
 				break;
 				default:
-				break;
+					if(piece.rotation % 2 == 0 && piece.pt.x < 200) piece.pt.x += 25;
+					else if(piece.rotation % 2 != 0 && piece.pt.x < 250) piece.pt.x += 25;
+					break;
 			}
 		}
 		if(e.getKeyCode() == KeyEvent.VK_X) {
-			piece.rotateLeft();
+			piece.rotateX();
 		}
 		if(e.getKeyCode() == KeyEvent.VK_Z) {
-			piece.rotateRight();			
+			piece.rotateZ();			
 		}
 		
 		
