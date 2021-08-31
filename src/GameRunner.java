@@ -17,6 +17,7 @@ public class GameRunner extends JPanel implements KeyListener, ActionListener{
 	private Pieces piece, nextPiece;
 	private Timer timer;
 	private int delay = 1, count = 0;
+	private boolean[][] board = new boolean[20][10];
 	
 	public GameRunner() {
 		piece = new Pieces( new Random().nextInt(7));
@@ -30,12 +31,40 @@ public class GameRunner extends JPanel implements KeyListener, ActionListener{
 		timer.start();
 		
 	}
+
+	private void updateBoard(Pieces piece) {
+		
+		if(piece != null && piece.pt != null && piece.pt2 != null 
+				&& piece.pt3 != null && piece.pt4 != null && piece.dropped) {
+			board[(piece.pt.y-25)/25 - 1][piece.pt.x/25 - 1] = true;
+			board[(piece.pt2.y-25)/25 - 1][piece.pt2.x/25 - 1] = true;
+			board[(piece.pt3.y-25)/25 - 1][piece.pt3.x/25 - 1] = true;
+			board[(piece.pt4.y-25)/25 - 1][piece.pt4.x/25 - 1] = true;
+		}
+	}	
 	
+	private void paintBoard(Graphics g) {
+		g.setColor(Color.white);
+		
+		for(int i = 0; i < 20; i++) {
+			for(int j = 0; j < 10; j++) {
+				if(board[i][j]) {
+					g.fillRect((j)*25+25 , (i+1)*25+25, 25, 25);
+				}
+			}
+		}
+	}
+
 	public void paint(Graphics g) {
 		
 		//background color
 		g.setColor(Color.black);
 		g.fillRect(1, 1, 800, 650);
+		
+		//shows the dropped pieces
+		clearLine();
+		updateBoard(piece);
+		paintBoard(g);
 		
 		//paints the queue
 		g.setColor(Color.gray);
@@ -61,7 +90,7 @@ public class GameRunner extends JPanel implements KeyListener, ActionListener{
 		
 		g.dispose();
 	}
-	
+
 	public void displayNext(Graphics g){
 		switch(nextPiece.piece){
 			case 0:
@@ -111,40 +140,40 @@ public class GameRunner extends JPanel implements KeyListener, ActionListener{
 			nextPiece = new Pieces((new Random().nextInt(7) + piece.piece) % 7);
 		}
 		
-		if(count % 2 == 0 ) {
+		if(count % 10 == 0 ) {
 			switch(piece.shape){
 				case 'O':
-					if (piece.pt.y < 500) piece.pt.y += 25;
+					if (piece.pt.y < 500 && validSpot(board, piece, 0)) piece.pt.y += 25;
 					else piece.dropped = true;
 					break;
 				case 'T':
-					if ((piece.rotation % 4 == 0 && piece.pt.y < 525) ||
-						(piece.rotation % 4 != 0 && piece.pt.y < 500)) piece.pt.y += 25;
+					if (((piece.rotation % 4 == 0 && piece.pt.y < 525) ||
+						(piece.rotation % 4 != 0 && piece.pt.y < 500)) && validSpot(board, piece, 0)) piece.pt.y += 25;
 					else piece.dropped = true;
 					break;
 				case 'Z':
-					if ((piece.rotation % 2 == 0 && piece.pt.y < 500) ||
-						(piece.rotation % 2 != 0 && piece.pt.y < 475)) piece.pt.y += 25;
+					if (((piece.rotation % 2 == 0 && piece.pt.y < 500) ||
+						(piece.rotation % 2 != 0 && piece.pt.y < 500)) && validSpot(board, piece, 0)) piece.pt.y += 25;
 					else piece.dropped = true;
 					break;
 				case 'S':
-					if ((piece.rotation % 2 == 0 && piece.pt.y < 500) ||
-						(piece.rotation % 2 != 0 && piece.pt.y < 475)) piece.pt.y += 25;
+					if (((piece.rotation % 2 == 0 && piece.pt.y < 500) ||
+						(piece.rotation % 2 != 0 && piece.pt.y < 500)) && validSpot(board, piece, 0)) piece.pt.y += 25;
 					else piece.dropped = true;
 					break;
 				case 'J':
-					if ((piece.rotation % 4 == 0  && piece.pt.y < 525) ||
-						(!(piece.rotation % 4 == 0) && piece.pt.y < 500)) piece.pt.y += 25;
+					if (((piece.rotation % 4 == 0  && piece.pt.y < 525) ||
+						(!(piece.rotation % 4 == 0) && piece.pt.y < 500)) && validSpot(board, piece, 0)) piece.pt.y += 25;
 					else piece.dropped = true;
 					break;
 				case 'L':
-					if ((piece.rotation % 4 == 0  && piece.pt.y < 525) ||
-							(!(piece.rotation % 4 == 0) && piece.pt.y < 500)) piece.pt.y += 25;
+					if (((piece.rotation % 4 == 0  && piece.pt.y < 525) ||
+							(!(piece.rotation % 4 == 0) && piece.pt.y < 500)) && validSpot(board, piece, 0)) piece.pt.y += 25;
 					else piece.dropped = true;
 					break;
 				case 'I':
-					if((piece.rotation % 2 == 0 && piece.pt.y < 525) ||
-					   (piece.rotation % 2 != 0 && piece.pt.y < 475)) piece.pt.y += 25;
+					if(((piece.rotation % 2 == 0 && piece.pt.y < 525) ||
+					   (piece.rotation % 2 != 0 && piece.pt.y < 475)) && validSpot(board, piece, 0)) piece.pt.y += 25;
 					else piece.dropped = true;
 					break;
 					
@@ -162,7 +191,7 @@ public class GameRunner extends JPanel implements KeyListener, ActionListener{
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+		if (e.getKeyCode() == KeyEvent.VK_LEFT && validSpot(board, piece, -1)) {
 			switch(piece.piece){
 				case 0: 
 					if(piece.pt.x > 25) piece.pt.x -= 25;
@@ -196,7 +225,7 @@ public class GameRunner extends JPanel implements KeyListener, ActionListener{
 			}
 			
 		}
-		if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+		if (e.getKeyCode() == KeyEvent.VK_RIGHT && validSpot(board, piece, 1)) {
 			switch(piece.piece){
 				case 0: 
 					if(piece.pt.x < 225) piece.pt.x += 25;
@@ -208,12 +237,10 @@ public class GameRunner extends JPanel implements KeyListener, ActionListener{
 					else if((piece.rotation % 4 == 3 || piece.rotation % 4 == -1) && piece.pt.x < 250) piece.pt.x += 25;
 					break;
 				case 2: 
-					if(piece.rotation % 2 == 0 && piece.pt.x < 225) piece.pt.x += 25;
-					else if(piece.rotation % 2 != 0 && piece.pt.x < 250) piece.pt.x += 25;
+					if(piece.pt.x < 225) piece.pt.x += 25;
 					break;
 				case 3: 
-					if(piece.rotation % 2 == 0 && piece.pt.x < 225) piece.pt.x += 25;
-					else if(piece.rotation % 2 != 0 && piece.pt.x < 250) piece.pt.x += 25;
+					if(piece.pt.x < 225) piece.pt.x += 25;
 					break;
 				case 4: 
 					if((piece.rotation % 4 == 3 || piece.rotation % 4 == -1) && piece.pt.x < 250) piece.pt.x += 25;
@@ -229,10 +256,10 @@ public class GameRunner extends JPanel implements KeyListener, ActionListener{
 					break;
 			}
 		}
-		if(e.getKeyCode() == KeyEvent.VK_X) {
+		if(e.getKeyCode() == KeyEvent.VK_X ) {
 			piece.rotateX();
 		}
-		if(e.getKeyCode() == KeyEvent.VK_Z) {
+		if(e.getKeyCode() == KeyEvent.VK_Z ) {
 			piece.rotateZ();			
 		}
 		
@@ -245,6 +272,62 @@ public class GameRunner extends JPanel implements KeyListener, ActionListener{
 		
 	}
 	
+	private boolean validSpot(boolean[][] board, Pieces piece, int dir) {
+		
+		switch(dir) {
+			case 0: 
+				if(	!board[(piece.pt.y-25)/25 ][piece.pt.x/25 - 1] &&
+					!board[(piece.pt2.y-25)/25 ][piece.pt2.x/25 - 1] &&
+					!board[(piece.pt3.y-25)/25 ][piece.pt3.x/25 - 1] &&
+					!board[(piece.pt4.y-25)/25 ][piece.pt4.x/25 - 1]) {
+					return true;
+				}	
+				break;
+			case 1:
+				if (piece.pt.x/25 < 10 && piece.pt2.x/25 < 10 
+					&& piece.pt3.x/25 < 10 && piece.pt4.x/25 < 10) {
+					if(	!board[(piece.pt.y-25)/25 ][piece.pt.x/25] &&
+						!board[(piece.pt2.y-25)/25 ][piece.pt2.x/25] &&
+						!board[(piece.pt3.y-25)/25 ][piece.pt3.x/25] &&
+						!board[(piece.pt4.y-25)/25 ][piece.pt4.x/25]) {
+						return true;
+					}	
+				}
+				break;
+			case -1: 
+				if (piece.pt.x/25 - 2 >= 0 && piece.pt2.x/25 - 2 >= 0 
+						&& piece.pt3.x/25 - 2 >= 0 && piece.pt4.x/25 - 2 >= 0) {
+						if(	!board[(piece.pt.y-25)/25 ][piece.pt.x/25 - 2] &&
+							!board[(piece.pt2.y-25)/25 ][piece.pt2.x/25 - 2] &&
+							!board[(piece.pt3.y-25)/25 ][piece.pt3.x/25 - 2] &&
+							!board[(piece.pt4.y-25)/25 ][piece.pt4.x/25 - 2]) {
+							return true;
+						}	
+					}
+				break;
+		}
+		
+		return false;
+	}
 	
-	
+	private void clearLine() {
+		int count = 0;
+		for(int i = 0; i < 20; i++) {
+			for(int j = 0; j < 10; j++) {
+				if(board[i][j]) count++;
+			}
+			if(count == 10) {
+				for(int k = i; k > 0; k--) {
+					for(int j = 0; j < 10; j++)
+						board[k][j] = board[k-1][j];
+				}
+				
+				for(int j = 0; j < 10; j++){
+					board[0][j] = false;
+				}
+			}
+			count = 0;
+		}
+	}
+
 }
