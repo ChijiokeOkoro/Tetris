@@ -16,25 +16,25 @@ public class Pieces {
 		
 		switch(piece) {
 			case 0: shape = 'O';
-			pt = new Point(125, 75);
+			pt = new Point(125, 50);
 			break;
 			case 1: shape = 'T';
-			pt = new Point(125, 75);
+			pt = new Point(125, 50);
 			break;
 			case 2: shape = 'Z';
-			pt = new Point(125, 75);			
+			pt = new Point(125, 50);			
 			break;
 			case 3: shape = 'S';
-			pt = new Point(125, 75);
+			pt = new Point(125, 50);
 			break;
 			case 4: shape = 'J';
-			pt = new Point(125, 75);
+			pt = new Point(125, 50);
 			break;
 			case 5: shape = 'L';
-			pt = new Point(125, 75);
+			pt = new Point(125, 50);
 			break;
 			default: shape = 'I';
-			pt = new Point(125, 75);
+			pt = new Point(125, 50);
 			break;
 		}
 	}
