@@ -14,14 +14,15 @@ import javax.swing.Timer;
 
 public class GameRunner extends JPanel implements KeyListener, ActionListener{
 	
-	private Pieces piece, nextPiece;
+	private Pieces piece, nextPiece, holdPiece, temp;
 	private Timer timer;
 	private int delay = 1, count = 0;
 	private boolean[][] board = new boolean[20][10];
+	private boolean hold = false;
 	
 	public GameRunner() {
 		piece = new Pieces( new Random().nextInt(7));
-		nextPiece = new Pieces( (new Random().nextInt(7) + piece.piece) % 7);
+		nextPiece = new Pieces( (new Random().nextInt(7)));
 		
 		addKeyListener(this);
 		setFocusable(true);
@@ -72,6 +73,13 @@ public class GameRunner extends JPanel implements KeyListener, ActionListener{
 		g.drawString("Next", 355, 35);
 		g.drawRect( 325, 50, 100, 100);
 		displayNext(g);
+		
+		//paints the hold spot
+		g.setColor(Color.gray);
+		g.setFont(new Font("arial", Font.PLAIN, 20));
+		g.drawString("Hold", 355, 200);
+		g.drawRect( 325, 215, 100, 100);
+		if(hold || holdPiece != null) displayHold(g);
 		
 		//tetris grid
 		g.setColor(Color.gray);
@@ -140,41 +148,41 @@ public class GameRunner extends JPanel implements KeyListener, ActionListener{
 			nextPiece = new Pieces((new Random().nextInt(7) + piece.piece) % 7);
 		}
 		
-		if(count % 10 == 0 ) {
+		if(count % 25 == 0 ) {
 			switch(piece.shape){
 				case 'O':
 					if (piece.pt.y < 500 && validSpot(board, piece, 0)) piece.pt.y += 25;
-					else piece.dropped = true;
+					else { piece.dropped = true; hold = false; }
 					break;
 				case 'T':
 					if (((piece.rotation % 4 == 0 && piece.pt.y < 525) ||
 						(piece.rotation % 4 != 0 && piece.pt.y < 500)) && validSpot(board, piece, 0)) piece.pt.y += 25;
-					else piece.dropped = true;
+					else { piece.dropped = true; hold = false; }
 					break;
 				case 'Z':
 					if (((piece.rotation % 2 == 0 && piece.pt.y < 500) ||
 						(piece.rotation % 2 != 0 && piece.pt.y < 500)) && validSpot(board, piece, 0)) piece.pt.y += 25;
-					else piece.dropped = true;
+					else { piece.dropped = true; hold = false; }
 					break;
 				case 'S':
 					if (((piece.rotation % 2 == 0 && piece.pt.y < 500) ||
 						(piece.rotation % 2 != 0 && piece.pt.y < 500)) && validSpot(board, piece, 0)) piece.pt.y += 25;
-					else piece.dropped = true;
+					else { piece.dropped = true; hold = false; }
 					break;
 				case 'J':
 					if (((piece.rotation % 4 == 0  && piece.pt.y < 525) ||
 						(!(piece.rotation % 4 == 0) && piece.pt.y < 500)) && validSpot(board, piece, 0)) piece.pt.y += 25;
-					else piece.dropped = true;
+					else { piece.dropped = true; hold = false; }
 					break;
 				case 'L':
 					if (((piece.rotation % 4 == 0  && piece.pt.y < 525) ||
 							(!(piece.rotation % 4 == 0) && piece.pt.y < 500)) && validSpot(board, piece, 0)) piece.pt.y += 25;
-					else piece.dropped = true;
+					else { piece.dropped = true; hold = false; }
 					break;
 				case 'I':
 					if(((piece.rotation % 2 == 0 && piece.pt.y < 525) ||
 					   (piece.rotation % 2 != 0 && piece.pt.y < 475)) && validSpot(board, piece, 0)) piece.pt.y += 25;
-					else piece.dropped = true;
+					else { piece.dropped = true; hold = false; }
 					break;
 					
 			}
@@ -262,7 +270,9 @@ public class GameRunner extends JPanel implements KeyListener, ActionListener{
 		if(e.getKeyCode() == KeyEvent.VK_Z ) {
 			piece.rotateZ();			
 		}
-		
+		if(e.getKeyCode() == KeyEvent.VK_SHIFT) {
+			hold = true;
+		}
 		
 	}
 
@@ -330,4 +340,57 @@ public class GameRunner extends JPanel implements KeyListener, ActionListener{
 		}
 	}
 
+	private void displayHold(Graphics g) {
+		if(!hold) {
+			hold = true;
+			
+			if(holdPiece == null) {
+				holdPiece = piece;
+				piece = nextPiece;
+				nextPiece = new Pieces(new Random().nextInt(7));
+			}
+			else {
+				temp = piece;
+				piece = holdPiece;
+				holdPiece = temp;
+			}
+			
+			switch(holdPiece.piece){
+				case 0:
+					 g.setColor(Color.yellow);
+					 g.fillRect(355, 245, 40, 40);
+					 break;
+				case 1:
+					 g.setColor(Color.magenta);
+					 g.fillRect(365, 245, 20, 20);
+					 g.fillRect(345, 265, 60, 20);
+					 break;
+				case 2:
+					 g.setColor(Color.red);
+					 g.fillRect(345, 245, 40, 20);
+					 g.fillRect(365, 265, 40, 20);
+					 break;
+				case 3:
+					 g.setColor(Color.green);
+					 g.fillRect(365, 245, 40, 20);
+					 g.fillRect(345, 265, 40, 20);
+					 break;
+				case 4:
+					 g.setColor(Color.blue);
+					 g.fillRect(345, 245, 20, 20);
+					 g.fillRect(345, 265, 60, 20);
+					 break;
+				case 5:
+					 g.setColor(Color.orange);
+					 g.fillRect(385, 245, 20, 20);
+					 g.fillRect(345, 265, 60, 20);
+					 break;
+				default:
+					 g.setColor(Color.cyan);
+					 g.fillRect(335, 255, 80, 20);
+					 break;
+			}
+		}
+	}
+	
 }
