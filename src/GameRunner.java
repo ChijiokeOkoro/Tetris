@@ -8,6 +8,7 @@ import java.awt.event.KeyListener;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -16,7 +17,7 @@ public class GameRunner extends JPanel implements KeyListener, ActionListener{
 	
 	private Pieces piece, nextPiece, holdPiece, temp;
 	private Timer timer;
-	private int delay = 1, count = 0;
+	private int delay = 1, count = 0, called = 0;
 	private boolean[][] board = new boolean[20][10];
 	private boolean hold = false;
 	
@@ -35,12 +36,17 @@ public class GameRunner extends JPanel implements KeyListener, ActionListener{
 
 	private void updateBoard(Pieces piece) {
 		
-		if(piece != null && piece.pt != null && piece.pt2 != null 
-				&& piece.pt3 != null && piece.pt4 != null && piece.dropped) {
-			board[(piece.pt.y-25)/25 - 1][piece.pt.x/25 - 1] = true;
-			board[(piece.pt2.y-25)/25 - 1][piece.pt2.x/25 - 1] = true;
-			board[(piece.pt3.y-25)/25 - 1][piece.pt3.x/25 - 1] = true;
-			board[(piece.pt4.y-25)/25 - 1][piece.pt4.x/25 - 1] = true;
+		try {
+			if(piece != null && piece.pt != null && piece.pt2 != null 
+					&& piece.pt3 != null && piece.pt4 != null && piece.dropped) {
+				board[(piece.pt.y-25)/25 - 1][piece.pt.x/25 - 1] = true;
+				board[(piece.pt2.y-25)/25 - 1][piece.pt2.x/25 - 1] = true;
+				board[(piece.pt3.y-25)/25 - 1][piece.pt3.x/25 - 1] = true;
+				board[(piece.pt4.y-25)/25 - 1][piece.pt4.x/25 - 1] = true;
+			}
+		}
+		catch(Exception e){
+			System.out.println("Out of Bounds error in updateBoard.");
 		}
 	}	
 	
@@ -152,37 +158,37 @@ public class GameRunner extends JPanel implements KeyListener, ActionListener{
 			switch(piece.shape){
 				case 'O':
 					if (piece.pt.y < 500 && validSpot(board, piece, 0)) piece.pt.y += 25;
-					else { piece.dropped = true; hold = false; }
+					else { piece.dropped = true; hold = false; called = 0;}
 					break;
 				case 'T':
 					if (((piece.rotation % 4 == 0 && piece.pt.y < 525) ||
 						(piece.rotation % 4 != 0 && piece.pt.y < 500)) && validSpot(board, piece, 0)) piece.pt.y += 25;
-					else { piece.dropped = true; hold = false; }
+					else { piece.dropped = true; hold = false; called = 0;}
 					break;
 				case 'Z':
 					if (((piece.rotation % 2 == 0 && piece.pt.y < 500) ||
 						(piece.rotation % 2 != 0 && piece.pt.y < 500)) && validSpot(board, piece, 0)) piece.pt.y += 25;
-					else { piece.dropped = true; hold = false; }
+					else { piece.dropped = true; hold = false; called = 0;}
 					break;
 				case 'S':
 					if (((piece.rotation % 2 == 0 && piece.pt.y < 500) ||
 						(piece.rotation % 2 != 0 && piece.pt.y < 500)) && validSpot(board, piece, 0)) piece.pt.y += 25;
-					else { piece.dropped = true; hold = false; }
+					else { piece.dropped = true; hold = false; called = 0;}
 					break;
 				case 'J':
 					if (((piece.rotation % 4 == 0  && piece.pt.y < 525) ||
 						(!(piece.rotation % 4 == 0) && piece.pt.y < 500)) && validSpot(board, piece, 0)) piece.pt.y += 25;
-					else { piece.dropped = true; hold = false; }
+					else { piece.dropped = true; hold = false; called = 0;}
 					break;
 				case 'L':
 					if (((piece.rotation % 4 == 0  && piece.pt.y < 525) ||
 							(!(piece.rotation % 4 == 0) && piece.pt.y < 500)) && validSpot(board, piece, 0)) piece.pt.y += 25;
-					else { piece.dropped = true; hold = false; }
+					else { piece.dropped = true; hold = false; called = 0;}
 					break;
 				case 'I':
 					if(((piece.rotation % 2 == 0 && piece.pt.y < 525) ||
 					   (piece.rotation % 2 != 0 && piece.pt.y < 475)) && validSpot(board, piece, 0)) piece.pt.y += 25;
-					else { piece.dropped = true; hold = false; }
+					else { piece.dropped = true; hold = false; called = 0;}
 					break;
 					
 			}
@@ -272,6 +278,10 @@ public class GameRunner extends JPanel implements KeyListener, ActionListener{
 		}
 		if(e.getKeyCode() == KeyEvent.VK_SHIFT) {
 			hold = true;
+			piece = new Pieces(piece.piece);
+		}
+		if(e.getKeyCode() == KeyEvent.VK_DOWN && validSpot(board, piece, 0)) {
+			piece.pt.y += 25;
 		}
 		
 	}
@@ -286,34 +296,49 @@ public class GameRunner extends JPanel implements KeyListener, ActionListener{
 		
 		switch(dir) {
 			case 0: 
-				if(	!board[(piece.pt.y-25)/25 ][piece.pt.x/25 - 1] &&
-					!board[(piece.pt2.y-25)/25 ][piece.pt2.x/25 - 1] &&
-					!board[(piece.pt3.y-25)/25 ][piece.pt3.x/25 - 1] &&
-					!board[(piece.pt4.y-25)/25 ][piece.pt4.x/25 - 1]) {
-					return true;
-				}	
-				break;
-			case 1:
-				if (piece.pt.x/25 < 10 && piece.pt2.x/25 < 10 
-					&& piece.pt3.x/25 < 10 && piece.pt4.x/25 < 10) {
-					if(	!board[(piece.pt.y-25)/25 ][piece.pt.x/25] &&
-						!board[(piece.pt2.y-25)/25 ][piece.pt2.x/25] &&
-						!board[(piece.pt3.y-25)/25 ][piece.pt3.x/25] &&
-						!board[(piece.pt4.y-25)/25 ][piece.pt4.x/25]) {
+				try {
+					if(	!board[(piece.pt.y-25)/25 ][piece.pt.x/25 - 1] &&
+						!board[(piece.pt2.y-25)/25 ][piece.pt2.x/25 - 1] &&
+						!board[(piece.pt3.y-25)/25 ][piece.pt3.x/25 - 1] &&
+						!board[(piece.pt4.y-25)/25 ][piece.pt4.x/25 - 1]) {
 						return true;
 					}	
 				}
+				catch(Exception e){
+					System.out.println("Index out of bounds error.");
+				}	
 				break;
-			case -1: 
-				if (piece.pt.x/25 - 2 >= 0 && piece.pt2.x/25 - 2 >= 0 
-						&& piece.pt3.x/25 - 2 >= 0 && piece.pt4.x/25 - 2 >= 0) {
-						if(	!board[(piece.pt.y-25)/25 ][piece.pt.x/25 - 2] &&
-							!board[(piece.pt2.y-25)/25 ][piece.pt2.x/25 - 2] &&
-							!board[(piece.pt3.y-25)/25 ][piece.pt3.x/25 - 2] &&
-							!board[(piece.pt4.y-25)/25 ][piece.pt4.x/25 - 2]) {
+			case 1:
+				try {
+					if (piece.pt.x/25 < 10 && piece.pt2.x/25 < 10 
+						&& piece.pt3.x/25 < 10 && piece.pt4.x/25 < 10) {
+						if(	!board[(piece.pt.y-25)/25 ][piece.pt.x/25] &&
+							!board[(piece.pt2.y-25)/25 ][piece.pt2.x/25] &&
+							!board[(piece.pt3.y-25)/25 ][piece.pt3.x/25] &&
+							!board[(piece.pt4.y-25)/25 ][piece.pt4.x/25]) {
 							return true;
 						}	
 					}
+				}
+				catch(Exception e){
+					System.out.println("Index out of bounds error.");
+				}	
+				break;
+			case -1: 
+				try {
+					if (piece.pt.x/25 - 2 >= 0 && piece.pt2.x/25 - 2 >= 0 
+							&& piece.pt3.x/25 - 2 >= 0 && piece.pt4.x/25 - 2 >= 0) {
+							if(	!board[(piece.pt.y-25)/25 ][piece.pt.x/25 - 2] &&
+								!board[(piece.pt2.y-25)/25 ][piece.pt2.x/25 - 2] &&
+								!board[(piece.pt3.y-25)/25 ][piece.pt3.x/25 - 2] &&
+								!board[(piece.pt4.y-25)/25 ][piece.pt4.x/25 - 2]) {
+								return true;
+							}	
+						}
+				}
+				catch(Exception e){
+					System.out.println("Index out of bounds error.");
+				}	
 				break;
 		}
 		
@@ -341,8 +366,8 @@ public class GameRunner extends JPanel implements KeyListener, ActionListener{
 	}
 
 	private void displayHold(Graphics g) {
-		if(!hold) {
-			hold = true;
+		if(hold & called == 0) {
+			called++;
 			
 			if(holdPiece == null) {
 				holdPiece = piece;
@@ -354,6 +379,7 @@ public class GameRunner extends JPanel implements KeyListener, ActionListener{
 				piece = holdPiece;
 				holdPiece = temp;
 			}
+		}
 			
 			switch(holdPiece.piece){
 				case 0:
@@ -390,7 +416,6 @@ public class GameRunner extends JPanel implements KeyListener, ActionListener{
 					 g.fillRect(335, 255, 80, 20);
 					 break;
 			}
-		}
 	}
 	
 }
