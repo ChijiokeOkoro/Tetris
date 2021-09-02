@@ -17,7 +17,7 @@ public class GameRunner extends JPanel implements KeyListener, ActionListener{
 	
 	private Pieces piece, nextPiece, holdPiece, temp;
 	private Timer timer;
-	private int delay = 1, count = 0, called = 0;
+	private int delay = 1, count = 0, called = 0, score = 0, lines = 0;
 	private boolean[][] board = new boolean[20][10];
 	private boolean hold = false;
 	
@@ -97,6 +97,16 @@ public class GameRunner extends JPanel implements KeyListener, ActionListener{
 			g.drawLine( 25 + i*25, 50 , 25 + i*25, 550);
 		}
 		
+		//displayScore
+		g.setColor(Color.gray);
+		g.setFont(new Font("arial", Font.PLAIN, 20));
+		g.drawString("Score", 345, 365);
+		g.setFont(new Font("arial", Font.PLAIN, 30));
+		g.drawRect(325, 380, 100, 50);
+		g.drawString(Integer.toString(score), 340, 415);
+		updateScore();
+		
+		
 		// draws the piece on the board
 		if(piece != null)
 			piece.drawShape(g);
@@ -152,6 +162,7 @@ public class GameRunner extends JPanel implements KeyListener, ActionListener{
 		if(piece.dropped) {
 			piece = nextPiece;
 			nextPiece = new Pieces((new Random().nextInt(7) + piece.piece) % 7);
+			updateScore();
 		}
 		
 		if(count % 25 == 0 ) {
@@ -360,6 +371,7 @@ public class GameRunner extends JPanel implements KeyListener, ActionListener{
 				for(int j = 0; j < 10; j++){
 					board[0][j] = false;
 				}
+				lines++;
 			}
 			count = 0;
 		}
@@ -418,4 +430,23 @@ public class GameRunner extends JPanel implements KeyListener, ActionListener{
 			}
 	}
 	
+	
+	private void updateScore() {
+		switch(lines) {
+			case 1:
+				score += 50;
+				break;
+			case 2:
+				score += 150;
+				break;
+			case 3:
+				score += 350;
+				break;
+			case 4:
+				score += 1000;
+				break;
+		}
+
+		lines = 0;
+	}
 }
