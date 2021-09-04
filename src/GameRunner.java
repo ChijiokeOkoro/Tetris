@@ -87,6 +87,15 @@ public class GameRunner extends JPanel implements KeyListener, ActionListener{
 		g.drawRect( 325, 215, 100, 100);
 		if(hold || holdPiece != null) displayHold(g);
 		
+		//displayScore
+		g.setColor(Color.gray);
+		g.setFont(new Font("arial", Font.PLAIN, 20));
+		g.drawString("Score", 345, 365);
+		g.setFont(new Font("arial", Font.PLAIN, 30));
+		g.drawRect(325, 380, 100, 50);
+		g.drawString(Integer.toString(score), 330, 415);
+		updateScore();
+		
 		//tetris grid
 		g.setColor(Color.gray);
 		for( int i = 0; i < 21; i++) {
@@ -96,15 +105,6 @@ public class GameRunner extends JPanel implements KeyListener, ActionListener{
 		for( int i = 0; i < 11; i++) {
 			g.drawLine( 25 + i*25, 50 , 25 + i*25, 550);
 		}
-		
-		//displayScore
-		g.setColor(Color.gray);
-		g.setFont(new Font("arial", Font.PLAIN, 20));
-		g.drawString("Score", 345, 365);
-		g.setFont(new Font("arial", Font.PLAIN, 30));
-		g.drawRect(325, 380, 100, 50);
-		g.drawString(Integer.toString(score), 340, 415);
-		updateScore();
 		
 		
 		// draws the piece on the board
@@ -316,7 +316,7 @@ public class GameRunner extends JPanel implements KeyListener, ActionListener{
 					}	
 				}
 				catch(Exception e){
-					System.out.println("Index out of bounds error.");
+					System.out.println("Index out of bounds error. Not a valid spot.");
 				}	
 				break;
 			case 1:
@@ -332,7 +332,7 @@ public class GameRunner extends JPanel implements KeyListener, ActionListener{
 					}
 				}
 				catch(Exception e){
-					System.out.println("Index out of bounds error.");
+					System.out.println("Index out of bounds error. Not a valid spot.");
 				}	
 				break;
 			case -1: 
@@ -348,7 +348,7 @@ public class GameRunner extends JPanel implements KeyListener, ActionListener{
 						}
 				}
 				catch(Exception e){
-					System.out.println("Index out of bounds error.");
+					System.out.println("Index out of bounds error. Not a valid spot.");
 				}	
 				break;
 		}
@@ -429,8 +429,7 @@ public class GameRunner extends JPanel implements KeyListener, ActionListener{
 					 break;
 			}
 	}
-	
-	
+		
 	private void updateScore() {
 		switch(lines) {
 			case 1:
